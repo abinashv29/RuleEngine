@@ -218,7 +218,7 @@ export default function RuleBuilder() {
     setCurrentRuleSet(prev => {
       const rule = prev.rules.find(r => r.id === ruleId);
       if (!rule) return prev;
-  
+
       // Create post-expiry variant of the rule
       const postExpiryRule: Rule = {
         ...rule,
@@ -228,21 +228,21 @@ export default function RuleBuilder() {
         parentRuleId: rule.id,
         timeLimit: undefined
       };
-  
+
       // Update original rule with time limit
       const updatedRules = prev.rules.map(r =>
         r.id === ruleId
           ? {
-              ...r,
-              timeLimit: {
-                enabled: true,
-                expiryDate: new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString(), // Default to 24 hours
-                postExpiryRuleId: postExpiryRule.id
-              }
+            ...r,
+            timeLimit: {
+              enabled: true,
+              expiryDate: new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString(), // Default to 24 hours
+              postExpiryRuleId: postExpiryRule.id
             }
+          }
           : r
       );
-  
+
       return {
         ...prev,
         rules: [...updatedRules, postExpiryRule]
@@ -269,7 +269,7 @@ export default function RuleBuilder() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-900 to-gray-800 text-white p-8">
+    <div className="min-h-screen bg-gradient-to-br from-gray-900 to-gray-800 text-white p-4 sm:p-8">
       {/* Full Screen Modal */}
       {isFlowChartFullScreen && (
         <div className="fixed inset-0 bg-gray-900/95 z-50 p-4 overflow-auto">
@@ -289,26 +289,26 @@ export default function RuleBuilder() {
       )}
 
       <div className="max-w-[1800px] mx-auto">
-        <div className="flex items-center justify-between gap-3 mb-8">
+        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 mb-8">
           <div className="flex items-center gap-3">
-            <Activity className="w-8 h-8 text-emerald-400" />
-            <h1 className="text-3xl font-bold">TymeBot Rule Builder</h1>
+            <Activity className="w-6 h-6 sm:w-8 sm:h-8 text-emerald-400" />
+            <h1 className="text-2xl sm:text-3xl font-bold">TymeBot Rule Builder</h1>
           </div>
           <button
             onClick={handleReset}
-            className="flex items-center gap-2 bg-red-500 hover:bg-red-600 px-4 py-2 rounded-md transition-colors"
+            className="flex items-center gap-2 bg-red-500 hover:bg-red-600 px-3 sm:px-4 py-1.5 sm:py-2 rounded-md transition-colors"
           >
             <RotateCcw size={16} />
             Reset
           </button>
         </div>
 
-        {/* Three Column Layout */}
-        <div className="grid grid-cols-[400px_1fr_400px] gap-6">
-          {/* Left Column - Configuration */}
-          <div className="space-y-6">
+        {/* Three Column Layout - Made Responsive */}
+        <div className="grid grid-cols-1 lg:grid-cols-[minmax(300px,400px)_1fr_minmax(300px,400px)] gap-4 sm:gap-6">
+          {/* Left Column */}
+          <div className="space-y-4 sm:space-y-6">
             {/* Rule Set Configuration */}
-            <div className="bg-gray-800 p-6 rounded-lg shadow-xl">
+            <div className="bg-gray-800 p-4 sm:p-6 rounded-lg shadow-xl overflow-x-auto">
               <div className="flex justify-between items-center mb-4 cursor-pointer" onClick={() => toggleSection('ruleSet')}>
                 <h2 className="text-xl font-semibold">Rule Set Configuration</h2>
                 <ChevronDown className={`transform transition-transform ${expandedSections.ruleSet ? 'rotate-180' : ''}`} />
@@ -339,7 +339,7 @@ export default function RuleBuilder() {
             </div>
 
             {/* Fields Configuration */}
-            <div className="bg-gray-800 p-6 rounded-lg shadow-xl">
+            <div className="bg-gray-800 p-4 sm:p-6 rounded-lg shadow-xl overflow-x-auto">
               <div className="flex justify-between items-center mb-4 cursor-pointer" onClick={() => toggleSection('fields')}>
                 <h2 className="text-xl font-semibold">Fields</h2>
                 <div className="flex items-center gap-2">
@@ -362,7 +362,7 @@ export default function RuleBuilder() {
                 <>
                   {showNewField && (
                     <div className="mb-4 p-4 bg-gray-700 rounded-lg">
-                      <div className="grid grid-cols-2 gap-4 mb-4">
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
                         <div>
                           <label className="block text-sm font-medium mb-1">Field Name</label>
                           <input
@@ -435,7 +435,7 @@ export default function RuleBuilder() {
             </div>
 
             {/* Rules Configuration */}
-            <div className="bg-gray-800 p-6 rounded-lg shadow-xl">
+            <div className="bg-gray-800 p-4 sm:p-6 rounded-lg shadow-xl overflow-x-auto">
               <div className="flex justify-between items-center mb-4 cursor-pointer" onClick={() => toggleSection('rules')}>
                 <h2 className="text-xl font-semibold">Rules</h2>
                 <div className="flex items-center gap-2">
@@ -456,13 +456,12 @@ export default function RuleBuilder() {
               {expandedSections.rules && (
                 <div className="space-y-4">
                   {currentRuleSet.rules.map((rule) => (
-                    <div key={rule.id} className={`bg-gray-700 p-4 rounded-lg ${
-                      rule.timeLimit?.enabled 
-                        ? isRuleExpired(rule)
-                          ? 'border-l-4 border-red-500'
-                          : 'border-l-4 border-green-500'
-                        : ''
-                    }`}>
+                    <div key={rule.id} className={`bg-gray-700 p-4 rounded-lg ${rule.timeLimit?.enabled
+                      ? isRuleExpired(rule)
+                        ? 'border-l-4 border-red-500'
+                        : 'border-l-4 border-green-500'
+                      : ''
+                      }`}>
                       <div className="flex justify-between items-center mb-3">
                         <input
                           type="text"
@@ -477,7 +476,7 @@ export default function RuleBuilder() {
                           <Trash2 size={16} />
                         </button>
                       </div>
-      
+
                       <div className="space-y-3 mb-3">
                         {rule.conditions.map((condition: any, index) => (
                           <div key={index} className="flex flex-wrap items-center gap-2">
@@ -516,7 +515,7 @@ export default function RuleBuilder() {
                           </div>
                         ))}
                       </div>
-      
+
                       <div className="flex flex-col gap-3">
                         <div className="flex flex-wrap justify-between items-center gap-2">
                           <button
@@ -535,7 +534,7 @@ export default function RuleBuilder() {
                             />
                           </div>
                         </div>
-      
+
                         <div className="flex items-center gap-2">
                           <label className="flex items-center gap-2">
                             <input
@@ -547,7 +546,7 @@ export default function RuleBuilder() {
                             <span className="text-sm">Enable OR condition</span>
                           </label>
                         </div>
-      
+
                         {rule.useOrOutcome && (
                           <div className="flex flex-wrap items-center gap-2">
                             <span className="text-sm whitespace-nowrap">OR Outcome:</span>
@@ -579,7 +578,7 @@ export default function RuleBuilder() {
                           </label>
                         </div>
                       )}
-      
+
                       {rule.timeLimit?.enabled && !rule.isPostExpiryRule && (
                         <div className="mt-4 mb-4">
                           <TimeLimitInput
@@ -590,7 +589,7 @@ export default function RuleBuilder() {
                           />
                         </div>
                       )}
-      
+
                       {rule.isPostExpiryRule && (
                         <div className="text-sm text-yellow-400 mb-4">
                           Post-expiry rule - Takes effect after parent rule expires
@@ -603,19 +602,19 @@ export default function RuleBuilder() {
             </div>
           </div>
 
-          {/* Middle Column - Possible Scenarios and Flow Chart */}
-          <div className="space-y-6">
-            {/* Possible Scenarios */}
-            <div className="bg-gray-800 p-6 rounded-lg shadow-xl overflow-x-auto">
+          {/* Middle Column */}
+          <div className="space-y-4 sm:space-y-6">
+            {/* Scenarios */}
+            <div className="bg-gray-800 p-4 sm:p-6 rounded-lg shadow-xl overflow-x-auto">
               <div className="flex justify-between items-center mb-4 cursor-pointer"
                 onClick={() => toggleSection('scenarios')}>
                 <h3 className="text-lg font-semibold">Rule Scenarios</h3>
                 <ChevronDown className={`transform transition-transform ${expandedSections.scenarios ? 'rotate-180' : ''}`} />
               </div>
               {expandedSections.scenarios && (
-                <div className="space-y-12">
+                <div className="space-y-8 sm:space-y-12">
                   {currentRuleSet.rules.map((rule) => (
-                    <div key={rule.id} className="min-w-[800px]">
+                    <div key={rule.id} className="min-w-[300px] sm:min-w-[800px]">
                       <div className="font-medium text-emerald-400 mb-4">{rule.name}</div>
                       <div className="flex items-center">
                         {/* Start Node */}
@@ -629,12 +628,11 @@ export default function RuleBuilder() {
                         {rule.conditions.map((condition, index) => (
                           <React.Fragment key={index}>
                             <DiamondShape >
-                              <div className='text-black'>
-
+                              <p className='text-black text-xs sm:text-sm md:text-base break-words'>
                                 {currentRuleSet.fields.find(f => f.name === condition.field)?.label}
                                 <br />
                                 {condition.operator} {condition.value}
-                              </div>
+                              </p>
                             </DiamondShape>
                             <ArrowRight className="mx-4" />
                           </React.Fragment>
@@ -662,7 +660,7 @@ export default function RuleBuilder() {
             </div>
             {/* Test Rules */}
 
-            <div className="bg-gray-800 p-6 rounded-lg shadow-xl sticky top-8">
+            <div className="bg-gray-800 p-4 sm:p-6 rounded-lg shadow-xl sticky top-8">
               <h2 className="text-xl font-semibold mb-4">Test Rules</h2>
               <div className="space-y-4">
                 {currentRuleSet.fields.map(field => (
@@ -702,7 +700,7 @@ export default function RuleBuilder() {
 
             {/* Test Results */}
             {result && (
-              <div className={`bg-gray-800 p-6 rounded-lg shadow-xl sticky top-[calc(100vh-2500px)] relative overflow-hidden ${result.isValid
+              <div className={`bg-gray-800 p-4 sm:p-6 rounded-lg shadow-xl sticky top-[calc(100vh-2500px)] relative overflow-hidden ${result.isValid
                 ? result.isOrOutcome
                   ? 'bg-yellow-500/20 border border-yellow-500/30'
                   : 'bg-emerald-500/20 border border-emerald-500/30'
@@ -724,11 +722,11 @@ export default function RuleBuilder() {
 
           </div>
 
-          {/* Right Column - Test Rules */}
-          <div className="space-y-6">
+          {/* Right Column */}
+          <div className="space-y-4 sm:space-y-6">
             {/* Flow Chart */}
 
-            <div className="bg-gray-800 p-6 rounded-lg shadow-xl overflow-x-auto">
+            <div className="bg-gray-800 p-4 sm:p-6 rounded-lg shadow-xl overflow-x-auto">
               <div className="flex justify-between items-center mb-4 cursor-pointer"
                 onClick={() => toggleSection('ruleFlow')}>
                 <h3 className="text-lg font-semibold">Rule Flow</h3>
