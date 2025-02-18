@@ -29,7 +29,7 @@ const Butterfly: React.FC<ButterflyProps> = ({
         >
             <div className="animate-wing-flap">
                 <img
-                    src="src/Image/Star.png" // Make sure to add this image to your public folder
+                    src="public/images/Star.png" // Make sure to add this image to your public folder
                     alt="butterfly"
                     className="w-12 h-12 object-contain"
                     style={{
